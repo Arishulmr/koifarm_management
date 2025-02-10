@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id('fish_id');
             $table->string('fish_code');
             $table->string('fish_variety');
-            $table->foreignId('breeder_id')->constrained('breeders')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreignId('breeder_id')->references('breeder_id')->constrained('breeders')->onDelete('cascade')->onUpdate('cascade');
             $table->string('fish_image');
             $table->date('fish_birth_date');
             $table->date('fish_import_date');
