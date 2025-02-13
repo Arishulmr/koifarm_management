@@ -9,8 +9,9 @@ use App\Models\Fish;
 use App\Models\FishSize;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-
+use Illuminate\Support\Facades\Log;
 
 class FishController extends Controller
 {
@@ -37,67 +38,66 @@ class FishController extends Controller
      */
 
      public function store(Request $request)
-     {
-         DB::beginTransaction();
-         try {
-             // Create the Fish record first
-             $fish = Fish::create([
-                 'fish_code' => $request->fish_code,
-                 'fish_variety' => $request->fish_variety,
-                 'breeder_id' => $request->breeder_id,
-                 'fish_price' => $request->fish_price,
-                 'fish_birth_date' => $request->fish_birth_date,
-                 'fish_import_date' => $request->fish_import_date,
-                 'fish_image' => $request->fish_image,
-             ]);
+{
+    DB::beginTransaction();
+    try {
+        // Handle fish image upload
+        if ($request->hasFile('fish_image')) {
+            $fishImagePath = $request->file('fish_image')->store('fish_images', 'public');
+        } else {
+            $fishImagePath = null;
+        }
 
-             // Store multiple fish sizes & weights
-             if ($request->fish_size ) {
-                     FishSize::create([
-                         'fish_id' => $fish->fish_id,
-                         'fish_size' => $request->fish_size,
-                         'fish_weight' => $request->fish_weight,
-                         'measured_date' => $request->measured_date
-                     ]);
-             }
+        // Create the Fish record first
+        $fish = Fish::create([
+            'fish_code' => $request->fish_code,
+            'fish_variety' => $request->fish_variety,
+            'breeder_id' => $request->breeder_id,
+            'fish_price' => $request->fish_price,
+            'fish_birth_date' => $request->fish_birth_date,
+            'fish_import_date' => $request->fish_import_date,
+            'fish_image' => $fishImagePath,
+            'user_id' => Auth::user()->id,
+        ]);
 
-             // Store Birth Certificate
-             if ($request->hasFile('certificate_file')) {
-                 $certificatePath = $request->file('certificate_file')->store('certificates', 'public');
-             } else {
-                 $certificatePath = null;
-             }
+        // Store Fish Size (Foreign Key fish_id)
+        if ($request->fish_size) {
+            FishSize::create([
+                'user_id' => Auth::user()->id,
+                'fish_id' => $fish->fish_id, // Use the correct fish_id from $fish
+                'fish_size' => $request->fish_size,  // Ensure correct column names
+                'fish_weight' => $request->fish_weight,
+                'measured_date' => $request->measured_date,
+            ]);
+        }
 
-             Certificate::create([
-                 'fish_id' => $fish->fish_id,
-                 'certificate_number' => $request->certificate_number,
-                 'issued_date' => $request->certificate_issued_date,
-                 'certificate_file' => $certificatePath,
-             ]);
+        // Handle certificate file upload
+        if ($request->hasFile('certificate_file')) {
+            $certificatePath = $request->file('certificate_file')->store('certificates', 'public');
+        } else {
+            $certificatePath = null;
+        }
 
-             // Store multiple awards
-             if ($request->award_placements) {
-                 foreach ($request->award_placements as $index => $placement) {
-                     $awardFilePath = $request->hasFile("award_files.$index")
-                         ? $request->file("award_files.$index")->store('awards', 'public')
-                         : null;
+        // Store Birth Certificate (Foreign Key fish_id)
+        Certificate::create([
+            'fish_id' => $fish->fish_id, // Use correct fish_id
+            'certificate_code' => $request->certificate_number,
+            'certificate_date' => $request->certificate_issued_date,
+            'certificate_file' => $certificatePath,
+        ]);
 
-                     Award::create([
-                         'fish_id' => $fish->fish_id,
-                         'placement' => $placement,
-                         'award_date' => $request->award_dates[$index] ?? null,
-                         'certificate_file' => $awardFilePath,
-                     ]);
-                 }
-             }
+        DB::commit();
+        return redirect()->route('fishes.create')->with('success', 'Fish has been added successfully!');
+    } catch (\Throwable $th) {
+        DB::rollBack();
 
-             DB::commit();
-             return redirect()->route('fishes.create')->with('success', 'Fish has been added successfully!');
-         } catch (\Throwable $th) {
-             DB::rollBack();
-             return redirect()->route('fishes.index')->with('error', 'Oops, something went wrong!');
-         }
-     }
+        // Debugging: Log the error message
+        Log::error('Error saving fish: ' . $th->getMessage());
+
+        return redirect()->route('fishes.create')->with('error', 'Oops, something went wrong!');
+    }
+}
+
 
 
 
