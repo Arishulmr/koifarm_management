@@ -5,25 +5,18 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class FishSize extends Model
+class Award extends Model
 {
     use HasFactory;
-    protected $fillable = [
+    protected $fillable= [
+        'award_code',
         'fish_id',
-        'fish_size',
-        'fish_weight',
-        'user_id',
-        'measured_date'
+        'award_image',
+        'award_placement',
     ];
 
     public function fish()
     {
         return $this->belongsTo(Fish::class, 'fish_id');
     }
-
-    public function user()
-    {
-        return $this->belongsTo(User::class, 'user_id');
-    }
-
 }

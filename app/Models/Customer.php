@@ -9,7 +9,6 @@ class Customer extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'customer_id',
         'customer_name',
         'customer_phone',
         'customer_email',
@@ -19,4 +18,9 @@ class Customer extends Model
         'verified_at',
         'updated_at',
     ];
+
+    public function address()
+    {
+        return $this->hasOne(CustomerAddress::class, 'address_id');
+    }
 }

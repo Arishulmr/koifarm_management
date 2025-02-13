@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id('customer_id');
             $table->string('customer_name');
             $table->string('customer_phone');
-            $table->foreignId('address_id')->constrained('customer_addresses')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreignId('address_id')->constrained('customer_addresses', 'address_id')->onDelete('cascade')->onUpdate('cascade');
             $table->string('customer_email');
             $table->string('customer_password');
             $table->timestamps();

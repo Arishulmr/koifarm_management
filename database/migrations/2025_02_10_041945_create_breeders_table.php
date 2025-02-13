@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('breeder_email');
             $table->string('breeder_phone');
             $table->foreignId('user_id')->constrained('users')->onUpdate('cascade')->onDelete('cascade');
-            $table->foreignId('address_id')->constrained('breeder_addresses')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignId('address_id')->constrained('breeder_addresses', 'breeder_address_id')->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
         });
     }

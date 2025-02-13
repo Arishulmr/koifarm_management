@@ -9,7 +9,6 @@ class CustomerAddress extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'address_id',
         'address_province',
         'address_city',
         'address_subdistrict',

@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id('certificate_id');
             $table->enum('certificate_type', ['origin', 'award']);
             $table->string('certificate_code');
-            $table->foreignId('fish_id')->constrained('fishes')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignId('fish_id')->constrained('fishes', 'fish_id')->onUpdate('cascade')->onDelete('cascade');
             $table->string('certificate_image');
             $table->timestamps();
         });

@@ -8,8 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class Breeder extends Model
 {
     use HasFactory;
+    protected $table = 'breeders';
     protected $fillable = [
-        'breeder_id',
         'breeder_name',
         'breeder_email',
         'breeder_phone',
@@ -23,5 +23,15 @@ class Breeder extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
-    
+
+    public function address()
+    {
+        return $this->hasOne(BreederAddress::class, 'address_id');
+    }
+
+    public function fishes()
+    {
+        return $this->hasMany(Fish::class);
+    }
+
 }

@@ -12,7 +12,7 @@ class BreederController extends Controller
      */
     public function index()
     {
-        //
+        return view('breeders.index');
     }
 
     /**

@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('transactions', function (Blueprint $table) {
             $table->id('transaction_id');
             $table->date('transaction_date');
-            $table->foreignId('customer_id')->constrained('customers')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignId('customer_id')->constrained('customers', 'customer_id')->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
         });
     }
