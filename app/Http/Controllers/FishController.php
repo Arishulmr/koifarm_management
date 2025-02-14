@@ -20,9 +20,13 @@ class FishController extends Controller
      */
     public function index()
     {
-        $fishes = Fish::with(['breeder', 'user'])->get();
+        $fishes = Fish::with(['breeder', 'user', 'latestSize'])
+                     ->withCount('awards') // This automatically creates an `awards_count` attribute
+                     ->get();
+
         return view('fishes.index', compact('fishes'));
     }
+
 
     /**
      * Show the form for creating a new resource.

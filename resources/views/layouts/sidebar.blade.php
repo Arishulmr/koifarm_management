@@ -4,7 +4,7 @@
         <a href="#" class="flex items-center">
             <x-application-logo></x-application-logo>
             <span
-                class="text-gray-700 dark:text-gray-300 text-xl font-semibold mx-2">{{ config('app.name', 'KS-Management') }}</span>
+                class="text-gray-700 dark:text-gray-300 text-xl font-semibold mx-2">Koisys</span>
         </a>
         <div class="flex md:hidden">
             <button type="button" @click="isOpen = !isOpen"

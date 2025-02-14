@@ -39,13 +39,29 @@ class Fish extends Model
         return $this->belongsTo(Transaction::class, 'transaction_id', 'transaction_id');
     }
 
+    public function latestSize()
+{
+    return $this->hasOne(FishSize::class, 'fish_id', 'fish_id')->latestOfMany('measured_date');
+}
+
+
     public function sizes()
     {
-        return $this->hasMany(FishSize::class);
+        return $this->hasMany(FishSize::class, 'fish_id', 'fish_id');
     }
 
     public function certificates()
     {
         return $this->hasMany(Certificate::class);
     }
+
+    public function awards()
+    {
+        return $this->hasMany(Award::class, 'fish_id', 'fish_id');
+    }
+    public function awardsAmount()
+    {
+        return $this->awards()->count();
+    }
+
 }

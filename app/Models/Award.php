@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Award extends Model
 {
     use HasFactory;
+    protected $primaryKey = 'award_id';
     protected $fillable= [
         'award_code',
         'fish_id',
@@ -17,6 +18,6 @@ class Award extends Model
 
     public function fish()
     {
-        return $this->belongsTo(Fish::class, 'fish_id');
+        return $this->belongsTo(Fish::class, 'fish_id', 'fish_id');
     }
 }
